@@ -6,6 +6,7 @@ class ViewGraphicsScene(QGraphicsScene):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+    
 
     def wheelEvent(self, event):
         if not event.modifiers() & Qt.ControlModifier:

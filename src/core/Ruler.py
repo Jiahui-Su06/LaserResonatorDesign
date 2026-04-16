@@ -61,7 +61,7 @@ class Ruler:
             )
             mark_sub[i].setParentItem(parent_item)
 
-        l_cursor = 15
+        l_cursor = 20
 
         cursor_begin = parent_scene.addLine(
             0 + self.x, 0 + self.y,
@@ -79,7 +79,7 @@ class Ruler:
 
         cursor_num = QGraphicsTextItem(f"{cursor}")
         cursor_num.setDefaultTextColor(Qt.black)
-        cursor_num.setPos(5 + self.x, 10 + self.y)
+        cursor_num.setPos(self.x+5, self.y-25)
         parent_scene.addItem(cursor_num)
         cursor_num.setParentItem(parent_item)
 

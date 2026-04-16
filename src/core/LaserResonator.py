@@ -1,5 +1,4 @@
-import numpy as np
-from core import ViewGraphicsScene, LaserBeam
+from core import ViewGraphicsScene, LaserBeam, Ruler
 from PySide6.QtGui import QPen, QBrush, QPainterPath, QFont
 from PySide6.QtCore import Qt, QPointF
 from PySide6.QtWidgets import (
@@ -37,13 +36,13 @@ class LaserResonator(LaserBeam):
 
         self.redraw()
 
-
     def redraw(self):
         self.clear()
         self.draw()
 
 
     def clear(self):
+
         for item in self.graphics_items:
             self.scene.removeItem(item)
             del item
@@ -58,17 +57,17 @@ class LaserResonator(LaserBeam):
 
         z, w = self.beam_radius()
         w_max = max(w[0], w[-1]) if len(w) > 0 else 0
-        w_mirror = w_max * 1.5 * self.scale if w_max > 0 else 20
-        thick_mirror = 5
+        self.w_mirror = w_max * 1.5 * self.scale if w_max > 0 else 20
+        self.thick_mirror = 5
         
         mirror_left = self.scene.addRect(
-            self.x-thick_mirror, self.y-w_mirror,
-            thick_mirror, w_mirror*2,
+            self.x-self.thick_mirror, self.y-self.w_mirror,
+            self.thick_mirror, self.w_mirror*2,
             blue_pen
         )
         mirror_right = self.scene.addRect(
-            self.x+self.L, self.y-w_mirror,
-            thick_mirror, w_mirror*2,
+            self.x+self.L, self.y-self.w_mirror,
+            self.thick_mirror, self.w_mirror*2,
             blue_pen, red_brush
         )
         normal = self.scene.addLine(
@@ -99,18 +98,31 @@ class LaserResonator(LaserBeam):
         beam_down_item.setPen(blue_pen)
         beam_up_item.setParentItem(mirror_left)
         beam_down_item.setParentItem(mirror_left)
+        # beam_up_item.setFlags(QGraphicsItem.ItemSmoothGeometry)
+        # beam_down_item.setFlags(QGraphicsItem.ItemSmoothGeometry)
 
         radius_left = self.scene.addText(f"{self.r1:.0f}")
         radius_left.setDefaultTextColor(Qt.black)
-        radius_left.setPos(self.x, self.y+w_mirror)
+        radius_left.setPos(self.x, self.y+self.w_mirror)
         radius_left.setParentItem(mirror_left)
 
         radius_right = self.scene.addText(f"{self.r2:.0f}")
         radius_right.setDefaultTextColor(Qt.black)
-        radius_right.setPos(self.x+self.L+thick_mirror, self.y+w_mirror)
+        radius_right.setPos(self.x+self.L+self.thick_mirror, self.y+self.w_mirror)
         radius_right.setParentItem(mirror_left)
 
+        Ruler(
+            parent_scene=self.scene,
+            parent_item=mirror_left,
+            cursor=self.L,
+            x=self.x,
+            y=self.y+self.w_mirror+50
+        )
+
+        self.mirror_left = mirror_left
         self.mirror_right = mirror_right
+        
         self.graphics_items.extend([
             mirror_left
         ])
+

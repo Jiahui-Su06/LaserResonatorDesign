@@ -10,9 +10,6 @@ class Ruler:
         self,
         parent_scene: ViewGraphicsScene,
         parent_item: QGraphicsRectItem,
-        # length: float = 500, # auto select length
-        # step: int = 50,    # must be 5 * N (N is postive integer)
-        # sub_step: int = 10,
         cursor: float = 225.0,
         x: float = 50.0,
         y: float = 300.0
@@ -21,11 +18,12 @@ class Ruler:
         self.cursor = cursor
         self.steper()
         num_step = int(cursor//self.step) + 1
+        num_sub_step = int(num_step*self.step/self.sub_step) + 1
         self.length = num_step * self.step
-        self.length, scale = pixel_scaler(self.length)
-        self.cursor *= scale
-        self.step *= scale
-        self.sub_step *= scale
+        length_scale, self.scale = pixel_scaler(self.length)
+        cursor_scale = self.cursor * self.scale
+        step_scale = self.step * self.scale
+        sub_step_scale = self.sub_step * self.scale
 
         self.x = x
         self.y = y
@@ -35,7 +33,7 @@ class Ruler:
 
         scale_line = parent_scene.addLine(
             0 + self.x, 0 + self.y,
-            self.length + self.x, 0 + self.y,
+            length_scale + self.x, 0 + self.y,
             black_pen
         )
         scale_line.setParentItem(parent_item)
@@ -44,19 +42,27 @@ class Ruler:
         l_sub_step = 5
 
         mark = [None,] * (num_step + 1)
+        mark_num = [None,] * (num_step + 1)
         for i in range(num_step + 1):
             mark[i] = parent_scene.addLine(
-                0 + self.step*i + self.x, 0 + self.y,
-                0 + self.step*i + self.x, 0 + l_step + self.y,
+                step_scale*i + self.x, self.y,
+                step_scale*i + self.x, l_step + self.y,
                 black_pen
             )
             mark[i].setParentItem(parent_item)
+            mark_num[i] = parent_scene.addText(f"{i*self.step:.1f}")
+            mark_num[i].setDefaultTextColor(Qt.black)
+            mark_num[i].setPos(
+                step_scale*i+self.x-10, l_step+self.y+5
+            )
+            mark_num[i].setParentItem(parent_item)
+
         
-        mark_sub = [None,] * int(num_step*self.step/self.sub_step + 1)
-        for i in range(int(num_step*self.step/self.sub_step + 1)):
+        mark_sub = [None,] * num_sub_step
+        for i in range(num_sub_step):
             mark_sub[i] = parent_scene.addLine(
-                0 + self.sub_step*i + self.x, 0 + self.y,
-                0 + self.sub_step*i + self.x, 0 + l_sub_step + self.y,
+                sub_step_scale*i + self.x, self.y,
+                sub_step_scale*i + self.x, l_sub_step + self.y,
                 black_pen
             )
             mark_sub[i].setParentItem(parent_item)
@@ -64,26 +70,25 @@ class Ruler:
         l_cursor = 20
 
         cursor_begin = parent_scene.addLine(
-            0 + self.x, 0 + self.y,
-            0 + self.x, self.y - l_cursor,
+            self.x, self.y,
+            self.x, self.y-l_cursor,
             black_pen
         )
         cursor_begin.setParentItem(parent_item)
 
         cursor_end = parent_scene.addLine(
-            self.cursor + self.x, 0 + self.y,
-            self.cursor + self.x, self.y - l_cursor,
+            cursor_scale + self.x, self.y,
+            cursor_scale + self.x, self.y-l_cursor,
             black_pen
         )
         cursor_end.setParentItem(parent_item)
 
-        cursor_num = QGraphicsTextItem(f"{cursor}")
+        cursor_num = parent_scene.addText(f"{self.cursor}")
         cursor_num.setDefaultTextColor(Qt.black)
         cursor_num.setPos(self.x+5, self.y-25)
-        parent_scene.addItem(cursor_num)
         cursor_num.setParentItem(parent_item)
 
-    
+
     def steper(self):
         if self.cursor > 500:
             self.step = 100
@@ -92,11 +97,11 @@ class Ruler:
             self.step = 50
             self.sub_step = 5
         elif 50 < self.cursor <= 250:
+            self.step = 50
+            self.sub_step = 5
+        else:
             self.step = 10
             self.sub_step = 1
-        else:
-            self.step = 5
-            self.sub_step = 0.5
         
 
 

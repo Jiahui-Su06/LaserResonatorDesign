@@ -27,17 +27,36 @@ class ViewGraphicsScene(QGraphicsScene):
             super().keyPressEvent(event)
             return
         
-        pos = self.main_window.resonator.mirror_right.pos()
-        x, y = pos.x(), pos.y()
+        # pos = self.main_window.resonator.mirror_right.pos()
+        # x, y = pos.x(), pos.y()
 
-        self.step = 10 # 10 pixel
+        wl = self.main_window.wavelength_DSpinBox.value()
+        L  = self.main_window.cavity_length_DSpinBox.value()
+        r1 = self.main_window.left_radius_DSpinBox.value()
+        r2 = self.main_window.right_radius_DSpinBox.value()
+        step = self.main_window.key_step_DSpinBox.value()
 
         if event.key() == Qt.Key_Left:
-            x -= self.step
+            L -= step
         elif event.key() == Qt.Key_Right:
-            x += self.step
+            L += step
+        elif event.key() == Qt.Key_W:
+            r1 += step
+        elif event.key() == Qt.Key_S:
+            r1 -= step
+        elif event.key() == Qt.Key_Up:
+            r2 += step
+        elif event.key() == Qt.Key_Down:
+            r2 -= step
         else:
             super().keyPressEvent(event)
             return
+        
+        self.main_window.cavity_length_DSpinBox.setValue(L)
+        self.main_window.left_radius_DSpinBox.setValue(r1)
+        self.main_window.right_radius_DSpinBox.setValue(r2)
 
-        self.main_window.resonator.mirror_right.setPos(x, y)
+        self.main_window.resonator.update_params(wl=wl, L=L, r1=r1, r2=r2)
+        self.main_window.resonator.redraw()
+
+        # self.main_window.resonator.mirror_right.setPos(x, y)

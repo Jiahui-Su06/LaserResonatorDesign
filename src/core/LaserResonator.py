@@ -65,14 +65,23 @@ class LaserResonator(LaserBeam):
             self.thick_mirror, self.w_mirror*2,
             blue_pen
         )
+        ruler = Ruler(
+            parent_scene=self.scene,
+            parent_item=mirror_left,
+            cursor=self.L,
+            x=self.x,
+            y=self.y+self.w_mirror+50
+        )
+        L_scale = self.L * ruler.scale
         mirror_right = self.scene.addRect(
-            self.x+self.L, self.y-self.w_mirror,
+            self.x+L_scale, self.y-self.w_mirror,
             self.thick_mirror, self.w_mirror*2,
-            blue_pen, red_brush
+            blue_pen,
+            # red_brush
         )
         normal = self.scene.addLine(
             self.x, self.y,
-            self.x+self.L, self.y,
+            self.x+L_scale, self.y,
             red_pen
         )
 
@@ -85,12 +94,12 @@ class LaserResonator(LaserBeam):
 
         beam_up = QPainterPath()
         beam_down = QPainterPath()
-        beam_up.moveTo(self.x+z[0], self.y+w[0]*self.scale)
-        beam_down.moveTo(self.x+z[0], self.y-w[0]*self.scale)
+        beam_up.moveTo(self.x+z[0]*ruler.scale, self.y+w[0]*self.scale)
+        beam_down.moveTo(self.x+z[0]*ruler.scale, self.y-w[0]*self.scale)
 
         for i in range(1, len(z)):
-            beam_up.lineTo(self.x+z[i], self.y+w[i]*self.scale)
-            beam_down.lineTo(self.x+z[i], self.y-w[i]*self.scale)
+            beam_up.lineTo(self.x+z[i]*ruler.scale, self.y+w[i]*self.scale)
+            beam_down.lineTo(self.x+z[i]*ruler.scale, self.y-w[i]*self.scale)
 
         beam_up_item = self.scene.addPath(beam_up)
         beam_up_item.setPen(blue_pen)
@@ -108,16 +117,8 @@ class LaserResonator(LaserBeam):
 
         radius_right = self.scene.addText(f"{self.r2:.0f}")
         radius_right.setDefaultTextColor(Qt.black)
-        radius_right.setPos(self.x+self.L+self.thick_mirror, self.y+self.w_mirror)
+        radius_right.setPos(self.x+L_scale+self.thick_mirror, self.y+self.w_mirror)
         radius_right.setParentItem(mirror_left)
-
-        Ruler(
-            parent_scene=self.scene,
-            parent_item=mirror_left,
-            cursor=self.L,
-            x=self.x,
-            y=self.y+self.w_mirror+50
-        )
 
         self.mirror_left = mirror_left
         self.mirror_right = mirror_right

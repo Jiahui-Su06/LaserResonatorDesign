@@ -1,3 +1,3 @@
 # Laser Resonator Design
 
-![logo](./src/images/LRD.png )
+<img src="./src/images/LRD.png" width="150">

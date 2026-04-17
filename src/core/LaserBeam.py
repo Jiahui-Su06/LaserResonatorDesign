@@ -73,7 +73,7 @@ class LaserBeam:
 
         # this q is in R1
         return inv_q, stability
-    
+
 
     def solve_w0(self) -> tuple[float | None, float | None]:
         inv_q, stability = self.solve_q()
@@ -91,8 +91,8 @@ class LaserBeam:
         
         w0 = np.sqrt(self.wl * z_R / np.pi)
         return w0, z0
-    
-    
+
+
     def beam_radius(
         self,
         step_num: float = 100

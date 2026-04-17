@@ -2,7 +2,7 @@ from core import ViewGraphicsScene
 from core.pixel_scaler import pixel_scaler
 from PySide6.QtGui import QPen
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGraphicsRectItem, QGraphicsTextItem
+from PySide6.QtWidgets import QGraphicsRectItem
 
 
 class Ruler:

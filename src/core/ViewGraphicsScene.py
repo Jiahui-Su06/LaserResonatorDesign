@@ -22,13 +22,11 @@ class ViewGraphicsScene(QGraphicsScene):
 
         event.accept()
     
+    
     def keyPressEvent(self, event):
         if not self.main_window.resonator.mirror_right:
             super().keyPressEvent(event)
             return
-        
-        # pos = self.main_window.resonator.mirror_right.pos()
-        # x, y = pos.x(), pos.y()
 
         wl = self.main_window.wavelength_DSpinBox.value()
         L  = self.main_window.cavity_length_DSpinBox.value()
@@ -58,5 +56,4 @@ class ViewGraphicsScene(QGraphicsScene):
 
         self.main_window.resonator.update_params(wl=wl, L=L, r1=r1, r2=r2)
         self.main_window.resonator.redraw()
-
-        # self.main_window.resonator.mirror_right.setPos(x, y)
+    

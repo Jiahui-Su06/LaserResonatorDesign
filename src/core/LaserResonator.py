@@ -1,14 +1,7 @@
 from core import ViewGraphicsScene, LaserBeam, Ruler
-from PySide6.QtGui import QPen, QBrush, QPainterPath, QFont
-from PySide6.QtCore import Qt, QPointF
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QGraphicsView,
-    QGraphicsScene,
-    QGraphicsItem,
-    QGraphicsTextItem,
-    QGraphicsPathItem,
-)
+from PySide6.QtGui import QPen, QBrush, QPainterPath
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QGraphicsItem
 
 
 class LaserResonator(LaserBeam):
@@ -19,7 +12,7 @@ class LaserResonator(LaserBeam):
         L:  float = 450.0, # mm
         r1: float = 500.0, # mm (np.inf or 0 is plate mirror)
         r2: float = 500.0, # mm (np.inf or 0 is plate mirror)
-        x: float = 50.0, # origin point's (x,y)
+        x: float = 50.0,   # origin point's (x,y)
         y: float = 300.0,
     ):
         super().__init__(
@@ -35,6 +28,7 @@ class LaserResonator(LaserBeam):
         self.graphics_items = []
 
         self.redraw()
+
 
     def redraw(self):
         self.clear()
@@ -53,7 +47,7 @@ class LaserResonator(LaserBeam):
         # make pen and brush
         blue_pen = QPen(Qt.blue, 2)
         red_pen  = QPen(Qt.red, 2)
-        red_brush = QBrush(Qt.red)
+        # red_brush = QBrush(Qt.red)
 
         z, w = self.beam_radius()
         w_max = max(w[0], w[-1]) if len(w) > 0 else 0
@@ -107,8 +101,6 @@ class LaserResonator(LaserBeam):
         beam_down_item.setPen(blue_pen)
         beam_up_item.setParentItem(mirror_left)
         beam_down_item.setParentItem(mirror_left)
-        # beam_up_item.setFlags(QGraphicsItem.ItemSmoothGeometry)
-        # beam_down_item.setFlags(QGraphicsItem.ItemSmoothGeometry)
 
         radius_left = self.scene.addText(f"{self.r1:.0f}")
         radius_left.setDefaultTextColor(Qt.black)

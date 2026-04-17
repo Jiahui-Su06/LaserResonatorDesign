@@ -1,11 +1,7 @@
-from PySide6.QtCore import QSize, Qt, QPointF
-from PySide6.QtGui import QPen, QBrush, QPainterPath, QFont, QPainter
+from PySide6.QtGui import QPainter
 from ui_mainwindow import Ui_MainWindow
-from core import LaserBeam, ViewGraphicsScene, Ruler, LaserResonator
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QMessageBox,
-)
+from core import ViewGraphicsScene, LaserResonator
+from PySide6.QtWidgets import QMainWindow, QMessageBox
 
 
 class LRDWindow(QMainWindow, Ui_MainWindow):
@@ -34,27 +30,21 @@ class LRDWindow(QMainWindow, Ui_MainWindow):
             wl=wl, L=L, r1=r1, r2=r2
         )
 
-        # L = self.cavity_length_DSpinBox.value()
-        # Ruler(parent_scene=self.scene, parent_item=self.resonator.mirror_left, cursor=L)
-
         self.wavelength_DSpinBox.valueChanged.connect(self.redraw_scene)
         self.cavity_length_DSpinBox.valueChanged.connect(self.redraw_scene)
         self.left_radius_DSpinBox.valueChanged.connect(self.redraw_scene)
         self.right_radius_DSpinBox.valueChanged.connect(self.redraw_scene)
         self.help_Button.clicked.connect(self.show_help_dialog)
         self.reset_Button.clicked.connect(self.reset_Button_clicked)
-    
+
+
     def zoom_in(self):
         self.graphicsView.scale(2, 2)
-        # mirror_left_pos = self.resonator.mirror_left.scenePos()
-        # self.resonator.x = mirror_left_pos.x() + self.resonator.thick_mirror
-        # self.resonator.y = mirror_left_pos.y() + self.resonator.w_mirror
+
 
     def zoom_out(self):
         self.graphicsView.scale(0.5, 0.5)
-        # mirror_left_pos = self.resonator.mirror_left.scenePos()
-        # self.resonator.x = mirror_left_pos.x() + self.resonator.thick_mirror
-        # self.resonator.y = mirror_left_pos.y() + self.resonator.w_mirror
+
 
     def redraw_scene(self):
         wl = self.wavelength_DSpinBox.value()
@@ -64,7 +54,7 @@ class LRDWindow(QMainWindow, Ui_MainWindow):
 
         self.resonator.update_params(wl=wl, L=L, r1=r1, r2=r2)
         self.resonator.redraw()
-    
+
 
     def show_help_dialog(self):
         msg_box = QMessageBox(self)
@@ -79,7 +69,7 @@ class LRDWindow(QMainWindow, Ui_MainWindow):
 
         msg_box.exec()
 
-    
+
     def reset_Button_clicked(self):
         self.wavelength_DSpinBox.setValue(1.064)
         self.cavity_length_DSpinBox.setValue(450)

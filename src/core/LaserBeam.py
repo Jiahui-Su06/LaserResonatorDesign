@@ -9,8 +9,10 @@ class LaserBeam:
         L:  float = 450.0, # mm
         r1: float = 1000.0, # mm (np.inf or 0 is plate mirror)
         r2: float = 1000.0, # mm (np.inf or 0 is plate mirror)
+        r3: float | None = None,
+        r4: float | None = None
     ):
-        self.update_params(wl, L, r1, r2)
+        self.update_params(wl, L, r1, r2, r3, r4)
 
 
     def update_params(
@@ -18,23 +20,23 @@ class LaserBeam:
         wl: float,
         L: float,
         r1: float,
-        r2: float
+        r2: float,
+        r3: float | None = None,
+        r4: float | None = None
     ):
         self.wl = wl * 1e-3  # um -> mm
         self.L = L
         # radius -> 0 means inf 
         self.r1 = np.inf if abs(r1) < 1e-9 else r1
         self.r2 = np.inf if abs(r2) < 1e-9 else r2
-
-
-    def is_stable(self) -> bool:
-        if self.L <= 0:
-            return False
-        
-        g1 = 1.0 - self.L / self.r1
-        g2 = 1.0 - self.L / self.r2
-
-        return 0.0 <= g1*g2 <= 1.0
+        if r3 is None:
+            self.r3 = r3
+        else:
+            self.r3 = np.inf if abs(r3) < 1e-9 else r3
+        if r4 is None:
+            self.r4 = r4
+        else:
+            self.r4 = np.inf if abs(r4) < 1e-9 else r4
 
 
     @staticmethod
